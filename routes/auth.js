@@ -8,6 +8,7 @@ require("../database/connection");
 const User = require("../models/userschema");
 
 
+
 router.get('/', (req, res) => {
   res.send('Hello World! from routes ')
 })
@@ -50,6 +51,45 @@ router.post('/register', async (req, res) => {
     console.log(err);
 
   }
+
+})
+
+
+router.get('/user', async (req,res) => {
+  User.User.find({}).exec((err,docs) => {
+    if(err)throw (err);
+    res.json(docs);
+  })
+  
+})
+router.get('/class', async (req,res) => {
+  User.Class.find({}).populate("students")
+  .exec((err,docs) => {
+    if(err)throw (err);
+    res.json(docs);
+  })
+  
+})
+
+//to post
+router.post('/class' ,async (req,res) =>{
+console.log(req.body);
+let cl=new User.Class();
+cl.name = req.body.name;
+cl.students =[] ;
+cl.save((err) => {
+  if(err) res.json({"error": err})
+  else res.json(cl)
+})
+})
+
+//to update 
+router.put('/class/:id' ,async (req,res) =>{
+
+  User.Class.findOneAndUpdate({_id:req.params.id}, {$push:{students:req.body.studentId}},{new:true},(err,doc) =>{
+    if(err) throw(err);
+    else res.json(doc);
+  })
 
 })
 

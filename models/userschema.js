@@ -22,6 +22,12 @@ const userSchema = new mongoose.Schema({
 
 })
 
+const classSchema =new mongoose.Schema({
+    name :{type:String , unique:true},
+    students:[{type:"ObjectId" , ref :"USER"}]
+
+})
+
 
 
 userSchema.pre('save', async function (next) {
@@ -46,5 +52,6 @@ userSchema.methods.generateAuthToken = async function () {
 }
 
 const User = mongoose.model('USER', userSchema);
+const Class=mongoose.model("class", classSchema);
 
-module.exports = User;
+module.exports = {User,Class};
